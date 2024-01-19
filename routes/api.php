@@ -36,6 +36,8 @@ Route::group([
     "middleware" => ["auth:api"]
 ], function(){
     Route::get("get-dishes", [DishController::class, "index"]);
-    Route::get("save-dish", [DishController::class, "store"]);
-    
+    Route::post("save-dish", [DishController::class, "store"]);
+    Route::get('get-dish/{dishId}', [DishController::class, 'show']);
+    Route::post('update-dish/{dishId}', [DishController::class, 'update']);
+    Route::delete('delete-dish/{dishId}', [DishController::class, 'destroy']);
 });
