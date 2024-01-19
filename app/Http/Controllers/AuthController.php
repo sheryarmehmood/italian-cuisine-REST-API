@@ -10,6 +10,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str; 
 
 class AuthController extends Controller
 {
@@ -20,10 +21,11 @@ class AuthController extends Controller
 
          $validator = Validator::make($request->all(), 
                       [ 
-                      'name' => 'required',
-                      'email' => 'required|email',
-                      'password' => 'required',  
-                      'c_password' => 'required|same:password', 
+                      'name' => 'required|max:255',
+                      'email' => 'required|email|max:255|unique:users',
+                      'user_name' => 'required|max:255|unique:users',
+                      'password' => 'required|max:255',  
+                      'confirm_password' => 'required|same:password', 
                      ]);  
 
          if ($validator->fails()) {  
@@ -36,6 +38,9 @@ class AuthController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
+        $user->user_name = $request->user_name;
+         // Create 'nick_name' from 'name'
+        $user->nick_name = Str::slug($request->name);
         $user->save();
  
         return response()->json([
@@ -49,13 +54,13 @@ class AuthController extends Controller
         
         // data validation
         $request->validate([
-            "email" => "required|email",
+            "user_name" => "required",
             "password" => "required"
         ]);
 
         // JWTAuth
         $token = JWTAuth::attempt([
-            "email" => $request->email,
+            "user_name" => $request->user_name,
             "password" => $request->password
         ]);
 
