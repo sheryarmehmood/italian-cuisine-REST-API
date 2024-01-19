@@ -13,7 +13,7 @@ class DishController extends Controller
     public function index()
     {
         // indexing paginated feedback 
-        $dishes = Dish::paginate(1); // You can adjust the number of items per page as needed
+        $dishes = Dish::paginate(2); // You can adjust the number of items per page as needed
 
         return response()->json(['data' => $dishes], 200);
     }

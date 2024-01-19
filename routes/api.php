@@ -33,7 +33,7 @@ Route::group([
 
 //dishes routes
 Route::group([
-    "middleware" => ["auth:api"]
+    "middleware" => ["auth:api", "throttle:api"]
 ], function(){
     Route::get("get-dishes", [DishController::class, "index"]);
     Route::post("save-dish", [DishController::class, "store"]);
