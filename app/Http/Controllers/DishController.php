@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Dish;
 use Illuminate\Http\Request;
 use Validator;
+use Illuminate\Support\Facades\Storage;
 
 class DishController extends Controller
 {
@@ -44,36 +45,68 @@ class DishController extends Controller
     }
 
 
-
-    //to save new dish
     public function store(Request $request)
     {
-
-        $validator = Validator::make($request->all(), 
-        [ 
+        // Validate the request
+        $validator = Validator::make($request->all(), [
             'name' => 'required|max:255|string|unique:dishes',
-            'description' => 'required||max:255|string',
-            'image_url' => 'required|url|max:255',
+            'description' => 'required|max:255|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'price' => 'required|numeric',
-       ]);  
+        ]);
 
-        if ($validator->fails()) {  
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 401);
+        }
 
-        return response()->json(['error'=>$validator->errors()], 401); 
-
-        }  
+        // Handle image upload
+        $imagePath = $request->file('image')->store('public/images');
+        $imageUrl = Storage::url($imagePath);
 
         // Create a new dish
         $dish = Dish::create([
             'name' => $request->input('name'),
             'description' => $request->input('description'),
-            'image_url' => $request->input('image_url'),
+            'image_url' => $imageUrl,
             'price' => $request->input('price'),
         ]);
 
         // Optionally, you can return the created dish as a response
         return response()->json(['message' => 'Dish created successfully', 'dish' => $dish], 201);
     }
+
+
+
+
+    //to save new dish
+    // public function store(Request $request)
+    // {
+
+    //     $validator = Validator::make($request->all(), 
+    //     [ 
+    //         'name' => 'required|max:255|string|unique:dishes',
+    //         'description' => 'required||max:255|string',
+    //         'image_url' => 'required|url|max:255',
+    //         'price' => 'required|numeric',
+    //    ]);  
+
+    //     if ($validator->fails()) {  
+
+    //     return response()->json(['error'=>$validator->errors()], 401); 
+
+    //     }  
+
+    //     // Create a new dish
+    //     $dish = Dish::create([
+    //         'name' => $request->input('name'),
+    //         'description' => $request->input('description'),
+    //         'image_url' => $request->input('image_url'),
+    //         'price' => $request->input('price'),
+    //     ]);
+
+    //     // Optionally, you can return the created dish as a response
+    //     return response()->json(['message' => 'Dish created successfully', 'dish' => $dish], 201);
+    // }
 
 
 
