@@ -10,13 +10,35 @@ class DishController extends Controller
 {
 
     //to fetch all dishes
-    public function index()
-    {
-        // indexing paginated feedback 
-        $dishes = Dish::paginate(2); // You can adjust the number of items per page as needed
+    // public function index()
+    // {
+    //     // indexing paginated feedback 
+    //     $dishes = Dish::paginate(2); // You can adjust the number of items per page as needed
 
-        return response()->json(['data' => $dishes], 200);
+    //     return response()->json(['data' => $dishes], 200);
+    // }
+
+
+    public function index(Request $request)
+    {
+    // Get search query from the request parameters
+    $searchQuery = $request->input('search');
+
+    // Define the base query to fetch dishes
+    $query = Dish::query();
+
+    // Apply search if a search query is provided
+    if ($searchQuery) {
+        $query->where('name', 'like', "%$searchQuery%")
+              ->orWhere('description', 'like', "%$searchQuery%");
     }
+
+    // Paginate the results
+    $dishes = $query->paginate(2);
+
+    return response()->json(['data' => $dishes], 200);
+    }
+
 
 
     //to save new dish
