@@ -23,4 +23,11 @@ class User extends Authenticatable implements JWTSubject
     { 
         return []; 
     } 
+
+    
+    public function dishes()
+    {
+    return $this->belongsToMany(Dish::class, 'dish_user')->withPivot('rating');
+    }
+
 }

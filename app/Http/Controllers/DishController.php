@@ -147,33 +147,57 @@ class DishController extends Controller
     }
 
 
-
-    //to rate the dish
+    //rate a dish
     public function rate(Request $request, $dishId)
     {
-       
         // Validate the request data
-        $validator = Validator::make($request->all(), [
-            'rating' => 'required|numeric|min:1|max:10',
+        $request->validate([
+            'rating' => 'required|numeric|min:1|max:5',
         ]);
 
-        if ($validator->fails()) {
-            // Validation failed
-            return response()->json(['error' => $validator->errors()], 400);
-        }
-
-        try 
-        {
+        try {
             // Find the dish by ID
             $dish = Dish::findOrFail($dishId);
 
-            // Update the dish rating
-            $dish->update(['rating' => $request->input('rating')]);
+            // Attach the user to the dish with the rating
+            auth()->user()->dishes()->syncWithoutDetaching([$dishId => ['rating' => $request->input('rating')]]);
 
             return response()->json(['message' => 'Dish rated successfully']);
         } catch (\Exception $exception) {
-        // Dish not found
-        return response()->json(['error' => 'Dish not found'], 404);
+            // Dish not found
+            return response()->json(['error' => 'Dish not found'], 404);
         }
     }
+
+
+
+
+    //to rate the dish
+    // public function rate(Request $request, $dishId)
+    // {
+       
+    //     // Validate the request data
+    //     $validator = Validator::make($request->all(), [
+    //         'rating' => 'required|numeric|min:1|max:10',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         // Validation failed
+    //         return response()->json(['error' => $validator->errors()], 400);
+    //     }
+
+    //     try 
+    //     {
+    //         // Find the dish by ID
+    //         $dish = Dish::findOrFail($dishId);
+
+    //         // Update the dish rating
+    //         $dish->update(['rating' => $request->input('rating')]);
+
+    //         return response()->json(['message' => 'Dish rated successfully']);
+    //     } catch (\Exception $exception) {
+    //     // Dish not found
+    //     return response()->json(['error' => 'Dish not found'], 404);
+    //     }
+    // }
 }

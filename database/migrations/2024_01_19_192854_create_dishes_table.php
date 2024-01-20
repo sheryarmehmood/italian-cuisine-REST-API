@@ -20,8 +20,6 @@ class CreateDishesTable extends Migration
             $table->string('description')->unique();
             $table->string('image_url');
             $table->unsignedInteger('price'); // Change 'price' to 'unsignedInteger'
-            $table->unsignedInteger('rating')->default(0); // Add 'rating' column with default value 0
-            // Add any additional columns you need for the 'dishes' table
             $table->timestamps();
         });
     }
