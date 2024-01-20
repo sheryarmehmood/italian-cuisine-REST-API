@@ -9,6 +9,8 @@ use Validator;
 class DishController extends Controller
 {
 
+
+    
     //to fetch all dishes
     // public function index()
     // {
@@ -23,7 +25,7 @@ class DishController extends Controller
     {
     // Get search query from the request parameters
     $searchQuery = $request->input('search');
-
+    
     // Define the base query to fetch dishes
     $query = Dish::query();
 
@@ -33,8 +35,10 @@ class DishController extends Controller
               ->orWhere('description', 'like', "%$searchQuery%");
     }
 
+    $limit = $request->input('limit', 2); // Default limit is set to 10
+
     // Paginate the results
-    $dishes = $query->paginate(2);
+    $dishes = $query->paginate($limit);
 
     return response()->json(['data' => $dishes], 200);
     }
@@ -181,5 +185,5 @@ class DishController extends Controller
 
 
 
-    
+
 }
