@@ -40,4 +40,5 @@ Route::group([
     Route::get('get-dish/{dishId}', [DishController::class, 'show']);
     Route::post('update-dish/{dishId}', [DishController::class, 'update']);
     Route::delete('delete-dish/{dishId}', [DishController::class, 'destroy']);
+    Route::post('rate-dish/{dishId}', [DishController::class, 'rate']);
 });

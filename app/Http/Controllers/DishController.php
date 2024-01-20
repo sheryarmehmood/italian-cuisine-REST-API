@@ -127,19 +127,31 @@ class DishController extends Controller
 
 
     //to rate the dish
-    public function rateDish(Request $request, $dishId)
+    public function rate(Request $request, $dishId)
     {
+       
         // Validate the request data
-        $request->validate([
-            'rating' => 'required|numeric|min:1|max:5',
+        $validator = Validator::make($request->all(), [
+            'rating' => 'required|numeric|min:1|max:10',
         ]);
 
-        // Find the dish by ID
-        $dish = Dish::findOrFail($dishId);
+        if ($validator->fails()) {
+            // Validation failed
+            return response()->json(['error' => $validator->errors()], 400);
+        }
 
-        // Update the dish rating
-        $dish->update(['rating' => $request->input('rating')]);
+        try 
+        {
+            // Find the dish by ID
+            $dish = Dish::findOrFail($dishId);
 
-        return response()->json(['message' => 'Dish rated successfully']);
+            // Update the dish rating
+            $dish->update(['rating' => $request->input('rating')]);
+
+            return response()->json(['message' => 'Dish rated successfully']);
+        } catch (\Exception $exception) {
+        // Dish not found
+        return response()->json(['error' => 'Dish not found'], 404);
+        }
     }
 }
