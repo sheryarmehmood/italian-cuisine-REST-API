@@ -22,7 +22,7 @@ class DishController extends Controller
                 ->orWhere('description', 'like', "%$searchQuery%");
         }
 
-        $limit = $request->input('limit', 2); // Default limit is set to 10
+        $limit = $request->input('limit', 5); // Default limit is set to 10
 
         // Paginate the results
         $dishes = $query->paginate($limit);
