@@ -19,20 +19,20 @@ class AuthController extends Controller
     public function register(Request $request)
     {
 
-         $validator = Validator::make($request->all(), 
-                      [ 
-                      'name' => 'required|max:255',
-                      'email' => 'required|email|max:255|unique:users',
-                      'user_name' => 'required|max:255|unique:users',
-                      'password' => 'required|max:255',  
-                      'confirm_password' => 'required|same:password', 
-                     ]);  
+        $validator = Validator::make($request->all(), 
+        [ 
+        'name' => 'required|max:5',
+        'email' => 'required|email|max:255|unique:users',
+        'user_name' => 'required|max:255|unique:users',
+        'password' => 'required|max:255',  
+        'confirm_password' => 'required|same:password', 
+        ]);  
 
-         if ($validator->fails()) {  
+        if ($validator->fails()) {  
 
-               return response()->json(['error'=>$validator->errors()], 401); 
+        return response()->json(['error' => $validator->errors()->all()], 401);
 
-            }   
+        }   
 
         $user = new User();
         $user->name = $request->name;
@@ -41,22 +41,59 @@ class AuthController extends Controller
         $user->user_name = $request->user_name;
          // Create 'nick_name' from 'name'
         $user->nick_name = Str::slug($request->name);
-        $user->save();
+        
+        if($user->save()){
+            return response()->json([
+                "status" => true,
+                "message" => "User registered succcessfully",
+            ]);
+        }else{
+            return response()->json([
+                "status" => false,
+                "message" => "User can't be registered, Please try again"
+            ]);
+        }
+
  
-        return response()->json([
-            'success' => true,
-            'data' => $user
-        ], Response::HTTP_OK);
+        // return response()->json([
+        //     'success' => true,
+        //     'data' => $user
+        // ], Response::HTTP_OK);
+
+
     }
  
-    // User Login (POST, formdata)
+    
+    // User Login
     public function login(Request $request){
         
-        // data validation
-        $request->validate([
-            "user_name" => "required",
-            "password" => "required"
-        ]);
+        $validator = Validator::make($request->all(), 
+            [ 
+                "user_name" => "required",
+                "password" => "required",
+            ]);  
+
+            if ($validator->fails()) {  
+                return response()->json(['error' => $validator->errors()->first()], 401);
+            }          
+
+          // Check if the user exists
+            $user = User::where("user_name", $request->user_name)->first();
+
+            if (!$user) {
+                return response()->json([
+                    "status" => false,
+                    "message" => "User not found. Please register first and then try login again."
+                ]);
+            }
+
+            // Check the user's password
+            if (!Hash::check($request->password, $user->password)) {
+                return response()->json([
+                    "status" => false,
+                    "message" => "Invalid password"
+                ]);
+            }
 
         // JWTAuth
         $token = JWTAuth::attempt([
