@@ -74,16 +74,13 @@ class DishController extends Controller
     }
 
 
-
-
-    // Update an existing dish
+   // Update an existing dish
     public function update(Request $request, $dishId)
     {
 
         $validator = Validator::make($request->all(), [
             'name' => "required|max:255|string|unique:dishes,name,$dishId",
             'description' => "required|max:255|string|unique:dishes,description,$dishId",
-            'image_url' => 'required|url|max:255',
             'price' => 'required|numeric',
         ]);
 
@@ -97,10 +94,24 @@ class DishController extends Controller
             return response()->json(['message' => 'No dish found'], 404);
         }
 
+         // Handle image update
+         if ($request->hasFile('image')) {
+            // Delete the old image file if it exists
+            Storage::delete($dish->image_url);
+
+            // Upload the new image file
+            $imagePath = $request->file('image')->store('public/images');
+            $imageUrl = Storage::url($imagePath);
+
+            $dish->update([
+                'image_url' => $imageUrl,
+            ]);
+        }
+
+
         $dish->update([
             'name' => $request->input('name'),
             'description' => $request->input('description'),
-            'image_url' => $request->input('image_url'),
             'price' => $request->input('price'),
         ]);
 
