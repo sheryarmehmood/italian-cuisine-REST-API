@@ -79,17 +79,6 @@ class AuthController extends Controller
         ]);
     }
  
-// User Profile (GET)
-// public function profile(){
-
-//     $userdata = auth()->user();
-
-//     return response()->json([
-//         "status" => true,
-//         "message" => "Profile data",
-//         "data" => $userdata
-//     ]);
-// } 
 
 // To generate refresh token value
 public function refreshToken(){

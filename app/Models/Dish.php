@@ -12,12 +12,10 @@ class Dish extends Model
 
     protected $fillable = ['name', 'description', 'image_url', 'price'];
 
-    // Other model code...
 
-
-public function users()
-{
-    return $this->belongsToMany(User::class, 'dish_user')->withPivot('rating');
-}
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'dish_user')->withPivot('rating');
+    }
 
 }

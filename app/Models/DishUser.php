@@ -9,6 +9,4 @@ class DishUser extends Pivot
 
     protected $fillable = ['user_id', 'dish_id', 'rating'];
 
-
-    // Add any additional methods or customization you need
 }
