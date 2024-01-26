@@ -43,6 +43,7 @@ class AuthController extends Controller
         $user->nick_name = Str::slug($request->name);
         
         if($user->save()){
+            event(new \App\Events\UserRegistered($user));
             return response()->json([
                 "status" => true,
                 "message" => "User registered succcessfully",
