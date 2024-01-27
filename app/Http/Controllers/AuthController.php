@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str; 
+use App\Jobs\SendLoginEmailJob;
 
 class AuthController extends Controller
 {
@@ -103,6 +104,8 @@ class AuthController extends Controller
         ]);
 
         if(!empty($token)){
+            $details['email'] = $user->email;
+            dispatch(new SendLoginEmailJob($details));
 
             return response()->json([
                 "status" => true,
