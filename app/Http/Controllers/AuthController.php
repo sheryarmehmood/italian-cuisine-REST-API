@@ -104,8 +104,10 @@ class AuthController extends Controller
         ]);
 
         if(!empty($token)){
-            $details['email'] = $user->email;
-            dispatch(new SendLoginEmailJob($details));
+            // $details['email'] = $user->email;
+            // dispatch(new SendLoginEmailJob($details));
+
+            dispatch(new SendLoginEmailJob($user));
 
             return response()->json([
                 "status" => true,

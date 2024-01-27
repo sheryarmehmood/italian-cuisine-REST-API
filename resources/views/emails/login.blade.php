@@ -5,6 +5,8 @@
 </head>
 <body>
    
+<h2>Hi {{$user->name}}</h2>
+
 <p>You are successfully logged through Laravel Job</p>
   
 <strong>Thank you</strong>
