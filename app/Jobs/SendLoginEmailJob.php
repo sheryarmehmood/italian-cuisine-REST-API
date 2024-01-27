@@ -10,14 +10,11 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Mail\SendEmailLogin;
 use Mail;
-// use App\Models\User;
 use App\Models\User as UserModel;  
 
 class SendLoginEmailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-  
-    // protected $details;
     
     protected $user;
 
@@ -37,23 +34,5 @@ class SendLoginEmailJob implements ShouldQueue
         $email = new SendEmailLogin($this->user);
         Mail::to($this->user->email)->send($email);
     }
-
-    /**
-     * Create a new job instance.
-     */
-    // public function __construct($details)
-    // {
-    //     $this->details = $details;
-    // }
-  
-    /**
-     * Execute the job.
-     */
-    // public function handle(): void
-    // {
-    //     $email = new SendEmailLogin();
-    //     Mail::to($this->details['email'])->send($email);
-    // }
-
 
 }

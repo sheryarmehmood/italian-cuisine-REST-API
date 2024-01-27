@@ -39,12 +39,3 @@ Route::group([
     Route::delete('delete-dish/{dishId}', [DishController::class, 'destroy']);
     Route::post('rate-dish/{dishId}', [DishController::class, 'rate']);
 });
-
-
-Route::get('email-test', function(){
-  
-    $details['email'] = 'sheryar.mehmood1984@gmail.com';
-  
-    dispatch(new App\Jobs\SendLoginEmailJob($details));
-  
-});
